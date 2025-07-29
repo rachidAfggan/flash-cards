@@ -1,13 +1,16 @@
+import { useState } from "react";
 import "./index.css";
 
 export default function App() {
   return (
     <div className="App">
+      {/* On affiche le composant FlashCards */}
       <FlashCards />
     </div>
   );
 }
 
+// Tableau des questions et réponses
 const questions = [
   {
     id: 3457,
@@ -43,14 +46,38 @@ const questions = [
 ];
 
 function FlashCards() {
+  // State qui garde l'id de la carte actuellement active (ouverte)
+  const [activeCardId, setActiveCardId] = useState(null);
+
+  // Fonction appelée lorsqu'on clique sur une carte
+  function handleCardClick(cardId) {
+    // Si on clique sur la même carte => on la referme (null)
+    // Sinon => on ouvre la carte cliquée
+    const isSameCard = cardId === activeCardId;
+    setActiveCardId(isSameCard ? null : cardId);
+  }
+
   return (
     <div className="flashcards">
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-      <div>4</div>
-      <div>5</div>
-      <div>6</div>
+      {/* On parcourt toutes les questions et on affiche une carte pour chacune */}
+      {questions.map((card) => {
+        // Vérifie si cette carte est active (ouverte)
+        const isActive = activeCardId === card.id;
+
+        return (
+          <div
+            key={card.id}
+            className="flashcard"
+            // Lorsqu'on clique sur la carte, on appelle handleCardClick
+            onClick={() => handleCardClick(card.id)}
+            // Changer la couleur de fond selon si la carte est active
+            style={{ background: isActive ? "red" : "white" }}
+          >
+            {/* Si la carte est active => on montre la réponse, sinon la question */}
+            {isActive ? card.answer : card.question}
+          </div>
+        );
+      })}
     </div>
   );
 }
